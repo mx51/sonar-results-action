@@ -1,0 +1,8 @@
+# IDE
+.idea
+
+# Generated
+.venv
+
+# Misc
+test.sh

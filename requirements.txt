@@ -1,0 +1,2 @@
+PyGithub==1.55
+python-sonarqube-api==1.2.5

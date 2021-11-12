@@ -1,0 +1,11 @@
+name: 'Tmp Composite Action'
+description: 'Testing Github actions'
+
+runs:
+  using: "composite"
+  steps:
+    - run: pip install -r ${{ github.action_path }}/requirements.txt
+      shell: bash
+    - run: |
+        ${{ github.action_path }}/action.py
+      shell: bash
