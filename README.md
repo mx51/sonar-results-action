@@ -19,18 +19,6 @@ SONAR_TOKEN     # Sonarqube access token for retrieving results
 SONAR_HOST_URL  # URL of your Sonarqube service
 ```
 
-The following environment variable is optional, and indicates what metrics should be included in the pull request comment:
-
-```
-SONAR_METRIC_KEYS  # Comma-separated list of keys, for example: "coverage,lines,bugs"
-```
-
-If this environment variable is not set, this Github Action will default to using:
-
-```
-SONAR_METRIC_KEYS="coverage,lines,code_smells,bugs,complexity"
-```
-
 
 ### Github Action Workflow
 
@@ -45,6 +33,18 @@ on:
 ```
 
 This ensures the latest SonarQube scan results, when used in conjunction with the [SonarQube Scan Github Action](https://github.com/SonarSource/sonarqube-scan-action), are presented on the pull request whenever code changes are made.
+
+
+### Example Action
+
+```
+    - name: Display Quality Report
+      uses: mx51/sonar-results-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+```
 
 
 ## Notes
