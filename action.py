@@ -51,6 +51,13 @@ def main():
     # Update PR with comment
     update_pr_comment(pr, sonar_project_key, results, quality_gate_status)
 
+    # Exit based on status
+    if quality_gate_status:
+        print(' * Quality Gate: PASSED')
+    else:
+        print(' * Quality Gate: FAILED')
+        sys.exit(1)
+
 
 # Update PR with sonar scan comment
 def update_pr_comment(pr, sonar_project_key, results, quality_gate_status):
