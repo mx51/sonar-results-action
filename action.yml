@@ -1,5 +1,5 @@
-name: 'Tmp Composite Action'
-description: 'Testing Github actions'
+name: 'Sonar Results Action'
+description: 'For use with pull request checks'
 
 runs:
   using: "composite"
