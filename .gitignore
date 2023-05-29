@@ -3,6 +3,7 @@
 
 # Generated
 .venv
+*.pyc
 
 # Misc
 test.sh

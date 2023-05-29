@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 
 from configparser import RawConfigParser
-from sonarqube import SonarQubeClient
+from lib.sonar_client import SonarClient
 
 import github
 import json
 import os
 import re
+import requests
 import signal
-import sonarqube
 import sys
 
 
@@ -199,7 +199,7 @@ def fetch_sonar_results(pr_number):
     sonar_token = get_env_var('SONAR_TOKEN')
 
     # Create sonar client
-    sonar_client = SonarQubeClient(sonarqube_url=sonar_url, token=sonar_token)
+    sonar_client = SonarClient(sonar_url, sonar_token)
 
     # Get project metric values
     measures = fetch_project_measures(sonar_client, sonar_project_key, SONAR_DEFAULT_KEYS, pr_number)
@@ -232,7 +232,7 @@ def fetch_sonar_results(pr_number):
 
 def fetch_quality_gate_status(sonar_client, sonar_project_key, pr_number):
     # Check quality gate
-    qg_status = sonar_client.qualitygates.get_project_qualitygates_status(projectKey=sonar_project_key, pullRequest=pr_number)
+    qg_status = sonar_client.get_qualitygate_status(sonar_project_key, pr_number)
 
     if "projectStatus" in qg_status:
         if "status" in qg_status["projectStatus"]:
@@ -247,19 +247,8 @@ def fetch_project_measures(sonar_client, sonar_project_key, measurable_keys, pr_
     measurable_keys_str = ','.join(measurable_keys)
 
     # Call sonar
-    try:
-        component = sonar_client.measures.get_component_with_specified_measures(component=sonar_project_key, pullRequest=pr_number, fields="metrics,periods", metricKeys=measurable_keys_str)
-        return component['component']['measures']
-
-    except sonarqube.utils.exceptions.NotFoundError as e:
-        # Determine problematic field
-        m = re.search('The following metric keys are not found: (.*)$', str(e))
-        match = m.group(1)
-
-        # Log error
-        print(f'error: unknown sonar metric key set in SONAR_METRIC_KEYS: key={match}')
-        print('reference: https://docs.sonarqube.org/latest/user-guide/metric-definitions/')
-        sys.exit()
+    component = sonar_client.get_project_measures(sonar_project_key, pr_number, measurable_keys_str)
+    return component['component']['measures']
 
 
 # Extract result values
