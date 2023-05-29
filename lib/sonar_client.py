@@ -38,4 +38,6 @@ class SonarClient:
 
         # Call api
         response = requests.get(self.sonar_host_url + request_url, headers=headers)
+
+        # TODO: add handler for response code and errors
         return response.json()
